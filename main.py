@@ -17,7 +17,7 @@ def pass_gen():
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
-    password_letters = [random.choice(letters) for _ in range(random.randint(8,10))]
+    password_letters = [random.choice(letters) for _ in range(random.randint(8, 10))]
     password_symbols = [random.choice(symbols) for _ in range(random.randint(2, 4))]
     password_numbers = [random.choice(numbers) for _ in range(random.randint(2, 4))]
 
@@ -37,18 +37,23 @@ def save():
     password = password_entry.get()
     new_data = {
         website: {
-                "email": username,
-                "password": password
-            }
+            "email": username,
+            "password": password
+        }
     }
 
     if len(website) and len(password):
         messagebox.askokcancel(title=website, message=f"These are the details entered: \nUsername: {username} "
-                                                              f"\nPassword: {password} \n Is it okay to save?")
-        with open("data.json", mode="w") as data_file:
+                                                      f"\nPassword: {password} \n Is it okay to save?")
+        with open("data.json", mode="r") as data_file:
             # data_file.write(f"{website} | {username} | {password}\n")
 
-            json.dump(new_data, data_file, indent=4)
+            data = json.load(data_file)  # Reading old data
+            data.update(new_data)  # Update old data with new data
+
+        with open("data.json", mode="w") as data_file:
+            json.dump(data, data_file, indent=4)  # write updated data
+
             website_entry.delete(0, END)
             password_entry.delete(0, END)
     else:
