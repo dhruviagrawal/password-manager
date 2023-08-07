@@ -45,15 +45,18 @@ def save():
     if len(website) and len(password):
         messagebox.askokcancel(title=website, message=f"These are the details entered: \nUsername: {username} "
                                                       f"\nPassword: {password} \n Is it okay to save?")
-        with open("data.json", mode="r") as data_file:
-            # data_file.write(f"{website} | {username} | {password}\n")
-
-            data = json.load(data_file)  # Reading old data
+        try:
+            with open("data.json", mode="r") as data_file:
+                data = json.load(data_file)  # Reading old data
+                data.update(new_data)
+        except (FileNotFoundError, json.decoder.JSONDecodeError, ):
+            with open("data.json", "w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
             data.update(new_data)  # Update old data with new data
-
-        with open("data.json", mode="w") as data_file:
-            json.dump(data, data_file, indent=4)  # write updated data
-
+            with open("data.json", mode="w") as data_file:
+                json.dump(data, data_file, indent=4)  # write updated data
+        finally:
             website_entry.delete(0, END)
             password_entry.delete(0, END)
     else:
