@@ -63,6 +63,24 @@ def save():
         messagebox.showwarning(title="No Input", message="Enter valid website/password")
 
 
+# ---------------------------- FIND PASSWORD ------------------------------- #
+
+def find_pass():
+    website = website_entry.get()
+    try:
+        with open("data.json") as json_file:
+            data = json.load(json_file)
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
+        messagebox.showwarning(title="Error", message="Password not updated yet.")
+    else:
+        if website in data:
+            email = data[website]["email"]
+            password = data[website]["password"]
+            messagebox.showinfo(title=website, message=f"Email: {email}\nPassword: {password}")
+        else:
+            messagebox.showwarning(title="Error", message=f"Password not updated yet for {website}")
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 
 window = Tk()
@@ -83,14 +101,17 @@ username_label.grid(column=0, row=2)
 password_label = Label(text="Password: ")
 password_label.grid(column=0, row=3)
 
+search_btn = Button(text="Search", width=13, command=find_pass)
+search_btn.grid(column=2, row=1)
+
 generate_pass_btn = Button(text="Generate Password", command=pass_gen)
 generate_pass_btn.grid(column=2, row=3)
 
 add_btn = Button(text="Add", width=36, command=save)
 add_btn.grid(column=1, row=4, columnspan=2)
 
-website_entry = Entry(width=35)
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = Entry(width=21)
+website_entry.grid(column=1, row=1)
 website_entry.focus()
 
 username_entry = Entry(width=35)
